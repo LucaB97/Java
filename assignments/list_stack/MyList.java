@@ -77,7 +77,7 @@ public class MyList implements List {
 	
 	public void insertAt(int index, String string) {
 		if (index < 0) {
-			System.out.println("\nInsertion not admitted.");
+			System.out.println("Insertion not admitted.");
 			return;
 		}
 		if (this.isEmpty()) {
@@ -89,13 +89,15 @@ public class MyList implements List {
 			elements[index] = string;
 			return;
 		}
-		String[] temp = new String[index+1];
-		for (int i = 0; i < index ; i++) {
-			temp[i] = (i < this.getSize() ? elements[i] : "");
+		int len = this.getSize(); 
+		String[] temp = new String[len + 1];
+		for (int i = 0; i < len ; i++) {
+			temp[i] = elements[i];
 		}
-		temp[index] = string;
+		temp[len] = string;
 		elements = temp;
 		temp = null;
+		if (index > len) {System.out.println("new element placed at last position by default.");}
 	}
 	
 	
@@ -106,12 +108,13 @@ public class MyList implements List {
 		for (int i = 0 ; i < this.getSize() ; i++) {
 			if (i < index) {
 				temp[i] = elements[i];
-			} elseif (i > index) {
+			} else if (i > index) {
 				temp[i-1] = elements[i];
 			}
 		}
 		elements = temp;
 		temp = null;
+		if (elements.length == 0) {elements = null;}
 	}
 	
 	
