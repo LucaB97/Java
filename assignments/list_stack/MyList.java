@@ -100,8 +100,18 @@ public class MyList implements List {
 	
 	
 	public void remove(int index) {
-		if (this.isEmpty() || this.getSize() <= index || index < 0) {return;}
+		if (this.isEmpty() || index >= this.getSize() || index < 0) {return;}
 		elements[index] = "";
+		String[] temp = new String[this.getSize()-1];
+		for (int i = 0 ; i < this.getSize() ; i++) {
+			if (i < index) {
+				temp[i] = elements[i];
+			} elseif (i > index) {
+				temp[i-1] = elements[i];
+			}
+		}
+		elements = temp;
+		temp = null;
 	}
 	
 	
