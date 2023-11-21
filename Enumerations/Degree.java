@@ -1,0 +1,3 @@
+enum Degree {
+	HIGH_SCHOOL , BACHELOR , MASTER , PHD
+}
