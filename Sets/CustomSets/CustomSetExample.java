@@ -1,10 +1,13 @@
 import java.util.Set;
 import java.util.AbstractSet;
 import java.util.NoSuchElementException;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 public class CustomSetExample {
     
-    public class EvenNumberSet extends AbstractSet<Integer> {
+    public static class EvenNumberSet extends AbstractSet<Integer> {
 
         private final MyCustomStorage<Integer> storage = new MyCustomStorage<>();
 
@@ -32,7 +35,7 @@ public class CustomSetExample {
         private static class MyCustomStorage<T> {
             // Implement your custom storage logic
             // For simplicity, let's say it's a list
-            private final java.util.List<T> list = new java.util.ArrayList<>();
+            private final List<T> list = new ArrayList<>();
 
             public boolean add(T element) {
                 return list.add(element);
@@ -54,11 +57,13 @@ public class CustomSetExample {
 
             @Override
             public boolean hasNext() {
+                //System.out.println("hasNext call:\tnextEven is: " + nextEven);
                 return nextEven != null;
             }
 
             @Override
             public Integer next() {
+                //System.out.println("nextEven is: " + nextEven);
                 if (nextEven == null) {
                     throw new NoSuchElementException();
                 }
@@ -69,6 +74,7 @@ public class CustomSetExample {
 
             private Integer findNextEven() {
                 while (iterator.hasNext()) {
+                    //System.out.println("\nCalling *next* function\n");
                     Integer next = iterator.next();
                     if (next % 2 == 0) {
                         return next;
