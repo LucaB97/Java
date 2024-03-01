@@ -16,7 +16,9 @@ IOException //(checked)
 
 FileNotFoundException
 
+NoSuchElementException
 
+IllegalStateException
 
 
 // for checked exceptions, you can:
