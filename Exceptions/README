@@ -1,0 +1,26 @@
+//FAMOUS EXCEPTIONS
+
+StringIndexOutOfBoundsException
+
+ArithmeticException
+
+NullPointerException
+
+ClassCastException
+
+ArrayIndexOutOfBoundException
+
+IllegalArgumentException
+
+IOException //(checked)
+
+FileNotFoundException
+
+
+
+
+// for checked exceptions, you can:
+// either specify, in the method definition, which exceptions can be caught (using "throws <exception_name>")
+// or insert a "try...catch" block inside the method body
+
+//In either case, for custom exceptions you need to throw manually the exception when required, with "throw new <exception_name>"

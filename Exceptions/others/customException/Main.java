@@ -2,7 +2,7 @@ public class Main {
 
     public static class TextTooLongException extends Exception {
         public TextTooLongException(int size) {
-            super("Text length: " + size + " exceeds display size");
+            super("Text length (" + size + ") exceeds display size");
         }
     }    
     
@@ -28,15 +28,15 @@ public class Main {
         fsd.display("hello everyone");    
     }
     
-    /*public static void main(String[] args) {
-        FixedSizeDisplay fsd = new FixedSizeDisplay();
+    // public static void main(String[] args) {
+    //     FixedSizeDisplay fsd = new FixedSizeDisplay();
 
-        try {
-            fsd.display("hello");
-            fsd.display("hello everyone");
-        } catch (TextTooLongException ttle) {
-            System.out.println(ttle.getMessage());;
-        }        
-    }*/
+    //     try {
+    //         fsd.display("hello");
+    //         fsd.display("hello everyone");
+    //     } catch (TextTooLongException ttle) {
+    //         System.out.println(ttle.getMessage());
+    //     }        
+    // }
 
 }

@@ -11,6 +11,7 @@ public class ExceptionChainingExample {
                 System.err.println("Original cause: " + originalCause.getMessage());
             }
         }
+
     }
 
     public static void divide(int numerator, int denominator) {

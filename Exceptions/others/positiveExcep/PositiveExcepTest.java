@@ -22,12 +22,7 @@ public class PositiveExcepTest {
         System.out.println("scanner closed");
     }
 
-    public static void main(String[] args) {
-        try {
-            readNegativeNumbers(args[0]);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        
+    public static void main(String[] args) throws FileNotFoundException {
+        readNegativeNumbers(args[0]);
     }
 }

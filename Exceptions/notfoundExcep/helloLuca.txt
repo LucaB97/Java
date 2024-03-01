@@ -1,6 +1,0 @@
-Hello Luca!
-Do your best to learn programming in Java
-One day you will be able to write very complex algorithms
-Always believe in yourself
-Yours,
-Luca
