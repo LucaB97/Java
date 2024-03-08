@@ -1,9 +1,11 @@
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -172,7 +174,7 @@ public class QuentinGame {
             return location;   
         }
 
-        public void update_board() {
+        public void update_board(int last_move) {
             List<Integer> empty_locations = IntStream.range(0, board.size())
                                             .filter(i -> board.get(i) == -1)
                                             .boxed()
@@ -191,9 +193,10 @@ public class QuentinGame {
                         group.add(loc);
                 }
 
-                System.out.println(group);
-                if (candidate_for_territory(group))
+                if (candidate_for_territory(group)) {
                     System.out.println("New territory found:" + group);
+                    fill_territory(group, last_move);
+                }
                 exclude.addAll(group);
                 Collections.sort(exclude);
                 group.clear();
@@ -225,22 +228,46 @@ public class QuentinGame {
             }
             return true;
         }
+
+        public void fill_territory(ArrayList<Integer> group, int last_move) {
+            Set<Integer> neighbours_union = new HashSet<>();
+            for (int i : group)
+                neighbours_union.addAll(neighbours(i, new ArrayList<>()));
+            neighbours_union.removeAll(group);
+
+            ArrayList<Integer> distinctNeighbours = new ArrayList<>(neighbours_union);
+            System.out.println(distinctNeighbours);
+            int cnt_black = 0, cnt_white = 0;
+            for (int i : distinctNeighbours) {
+                if (board.get(i) == 0)
+                    cnt_black++;
+                else if (board.get(i) == 1)
+                    cnt_white++;
+            }
+
+            if (cnt_black == cnt_white) {
+                if (board.get(last_move) == 1)
+                    cnt_black++;
+                else
+                    cnt_white++;
+            }
+
+            final int replacement = (cnt_black<cnt_white)? 1 : 0;
+            group.forEach(index -> board.set(index, replacement));
+        }
     }
 
     public static void main(String[] args) {
         
         quentin myboard = new quentin(5);
         System.out.println(myboard + "\n\n");
-
         do {
-            myboard.nextMove(true);
-            myboard.update_board();
+            myboard.update_board(myboard.nextMove(true));
             System.out.println(myboard + "\n");
             // myboard.update_board();
             // System.out.println("\n\n");
             if (!myboard.gameover()) {
-                myboard.nextMove(false);
-                myboard.update_board();
+                myboard.update_board(myboard.nextMove(false));
                 System.out.println(myboard + "\n");
                 // myboard.update_board();
                 // System.out.println("\n\n");
