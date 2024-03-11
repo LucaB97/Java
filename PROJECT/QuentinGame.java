@@ -169,7 +169,7 @@ public class QuentinGame {
             ArrayList<Integer> mylist = new ArrayList<>();
             if (idx+line_size+1 < board.size() && (idx+1)/line_size == idx/line_size)
                 mylist.add(idx+line_size+1);
-            if (idx+line_size-1 < board.size() && (idx-1)/line_size == idx/line_size)
+            if (idx+line_size-1 < board.size() && (idx-1)/line_size == idx/line_size && idx != 0)
                 mylist.add(idx+line_size-1);
             if (idx-line_size-1 >= 0 && (idx-1)/line_size == idx/line_size)
                 mylist.add(idx-line_size-1);
