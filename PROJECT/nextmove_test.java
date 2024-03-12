@@ -1,5 +1,4 @@
 import java.util.List;
-import java.beans.Transient;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -10,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class TestFunction_nextMove {
+public class nextmove_test {
     
     public static class quentin {
 
@@ -31,7 +30,7 @@ public class TestFunction_nextMove {
             String pattern = "[a-zA-Z]\\d+";
 
             if (!(user_input.matches(pattern))) {
-                throw new IncorrectFormatException();
+                throw new IncorrectFormatException("Incorrect format. Try again!\n");
             }
             
             int letter = user_input.toLowerCase().charAt(0) - 'a';
@@ -41,11 +40,11 @@ public class TestFunction_nextMove {
             boolean valid_move =  location>=0 && location<board.size() && number<line_size;
             boolean free_location = !filled_locations.contains(location);
             if (!valid_move) {
-                throw new InvalidLocationException();
+                throw new InvalidLocationException("Invalid location. Try again!\n");
             }
 
             if (!free_location) {
-                throw new OccupiedLocationException();
+                throw new OccupiedLocationException("Location already filled. Try again!\n");
             }
 
             board.set(location, black ? 0 : 1);
@@ -55,20 +54,20 @@ public class TestFunction_nextMove {
     }
 
     public static class IncorrectFormatException extends Exception {
-        IncorrectFormatException() {
-            super("Input has to be like: \"<letter><number>\"");
+        IncorrectFormatException(String message) {
+            super(message);
         }
     }
 
     public static class InvalidLocationException extends Exception {
-        InvalidLocationException() {
-            super("The location specified is invalid");
+        InvalidLocationException(String message) {
+            super(message);
         }
     }
 
     public static class OccupiedLocationException extends Exception {
-        OccupiedLocationException() {
-            super("The location specified is already filled");
+        OccupiedLocationException(String message) {
+            super(message);
         }
     }
 
