@@ -194,11 +194,24 @@ public class QuentinGame_v2 {
 
         }
 
-        public int nextMove(final boolean black) throws IncorrectFormatException, InvalidLocationException, OccupiedLocationException {
-            List<Integer> filled_locations = IntStream.range(0, board.size())
+        public List<Integer> find_locations(boolean filled) {
+            List<Integer> locations;
+            if (filled) {
+                locations = IntStream.range(0, board.size())
                     .filter(i -> board.get(i) != -1)
                     .boxed()
                     .collect(Collectors.toList());
+            } else {
+                locations = IntStream.range(0, board.size())
+                    .filter(i -> board.get(i) == -1)
+                    .boxed()
+                    .collect(Collectors.toList());
+            }
+            return locations;
+        }
+
+        public int nextMove(final boolean black) throws IncorrectFormatException, InvalidLocationException, OccupiedLocationException {
+            List<Integer> filled_locations = find_locations(true);
         
             boolean valid_move = false;
             boolean free_location = false;
@@ -240,16 +253,9 @@ public class QuentinGame_v2 {
             int last_move = nextMove(black);
 
             while (true) {
-                empty_locations = IntStream.range(0, board.size())
-                                    .filter(i -> board.get(i) == -1)
-                                    .boxed()
-                                    .collect(Collectors.toList());
+                empty_locations = find_locations(false);
                 while (!empty_locations.isEmpty()) {
-                    for (int loc : empty_locations) {                
-                        if (region.isEmpty() || adiacent_location(region, loc)) {
-                            region.add(loc);
-                        }
-                    }
+                    region = next_region(empty_locations);
                     //System.out.println("New region: " + region);
 
                     if (candidate_for_territory(region)) {
@@ -258,7 +264,7 @@ public class QuentinGame_v2 {
                     }
         
                     empty_locations.removeAll(region);                    
-                    region.clear(); 
+                    //region.clear(); 
                 }
 
                 if (!legal_move(last_move)) {
@@ -287,6 +293,16 @@ public class QuentinGame_v2 {
             return true;        
         }
 
+        public List<Integer> next_region(final List<Integer> empty_locations) {
+            List<Integer> region = new ArrayList<>();
+            for (int loc : empty_locations) {                
+                if (region.isEmpty() || adiacent_location(region, loc)) {
+                    region.add(loc);
+                }
+            }
+            return region;
+        }
+        
         public boolean adiacent_location(List<Integer> region, int idx) {
             Set<Integer> region_neighbours = new TreeSet<>();
             for (int curr : region) {

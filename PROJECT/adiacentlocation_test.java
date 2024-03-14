@@ -1,13 +1,15 @@
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.Collections;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class candidate4territory_test {
+public class adiacentlocation_test {
     
     public static class IncorrectFormatException extends Exception {
         IncorrectFormatException(String message) {
@@ -52,11 +54,24 @@ public class candidate4territory_test {
             
         }
 
+        public List<Integer> find_locations(boolean filled) {
+            List<Integer> locations;
+            if (filled) {
+                locations = IntStream.range(0, board.size())
+                    .filter(i -> board.get(i) != -1)
+                    .boxed()
+                    .collect(Collectors.toList());
+            } else {
+                locations = IntStream.range(0, board.size())
+                    .filter(i -> board.get(i) == -1)
+                    .boxed()
+                    .collect(Collectors.toList());
+            }
+            return locations;
+        }
+        
         public int nextMove(final boolean black, final String user_input) throws IncorrectFormatException, InvalidLocationException, OccupiedLocationException {
-            List<Integer> filled_locations = IntStream.range(0, board.size())
-                                            .filter(i -> board.get(i) != -1)
-                                            .boxed()
-                                            .collect(Collectors.toList());
+            List<Integer> filled_locations = find_locations(true);
 
             String pattern = "[a-zA-Z]\\d+";
 
@@ -82,51 +97,58 @@ public class candidate4territory_test {
             return location;   
         }
 
-        public boolean candidate_for_territory(final List<Integer> region) {            
-            int cnt = 0;
-
+        public boolean adiacent_location(List<Integer> region, int idx) {
+            Set<Integer> region_neighbours = new TreeSet<>();
             for (int curr : region) {
-                for (int i : neighbours(curr)) {
-                    if (board.get(i) != -1)
-                        cnt++;
-                }
-                if (cnt < 2)
-                    return false;
-                cnt = 0;
+                region_neighbours.addAll(neighbours(curr));
+                region_neighbours.removeIf(index -> board.get(index) != -1);
             }
-            return true;
+            Set<Integer> extended_idx_neighbours = new TreeSet<>(neighbours(idx));
+            extended_idx_neighbours.removeIf(index -> board.get(index) != -1);
+            extended_idx_neighbours.add(idx);
+            Set<Integer> tempSet = new TreeSet<>(extended_idx_neighbours);
+            tempSet.retainAll(region_neighbours);
+            if (!tempSet.isEmpty())
+                return true;
+
+            while (true) {
+                for (int x : extended_idx_neighbours) {
+                    tempSet.addAll(neighbours(x));
+                    tempSet.removeIf(index -> board.get(index) != -1);
+                }
+                if (extended_idx_neighbours.equals(tempSet))
+                    return false;
+                extended_idx_neighbours.clear();
+                extended_idx_neighbours.addAll(tempSet);
+                tempSet.retainAll(region_neighbours);
+                if (!tempSet.isEmpty())
+                    return true;
+            }
         }
     }
 
     //TEST REGIONS WHICH ARE NOT TERRITORIES
     @Test
-    public void candidate4territory_test_topleft_false() throws IncorrectFormatException, InvalidLocationException, OccupiedLocationException {
+    public void adiacentlocation_test_false() throws IncorrectFormatException, InvalidLocationException, OccupiedLocationException {
         quentin myboard = new quentin(5);
+        List<Integer> myregion = new ArrayList<>(Arrays.asList(2,3,4));
+        myboard.nextMove(true, "a0");
         myboard.nextMove(true, "a1");
         myboard.nextMove(true, "b1");
         myboard.nextMove(true, "c1");
         myboard.nextMove(true, "c0");
-        assertEquals(false, myboard.candidate_for_territory(Arrays.asList(0,5)));
+        assertEquals(false, myboard.adiacent_location(myregion, 5));
     }
-    
+
     @Test
-    public void candidate4territory_test_topleft_true() throws IncorrectFormatException, InvalidLocationException, OccupiedLocationException {
+    public void adiacentlocation_test_true() throws IncorrectFormatException, InvalidLocationException, OccupiedLocationException {
         quentin myboard = new quentin(5);
+        List<Integer> myregion = new ArrayList<>(Arrays.asList(2,3,4));
+        myboard.nextMove(true, "a0");
         myboard.nextMove(true, "a1");
         myboard.nextMove(true, "b1");
-        myboard.nextMove(true, "b0");
-        assertEquals(true, myboard.candidate_for_territory(Arrays.asList(0)));
+        myboard.nextMove(true, "c1");
+        assertEquals(true, myboard.adiacent_location(myregion, 5));
     }
-
-    @Test
-    public void _candidate4territory_test_rightedge_true() throws IncorrectFormatException, InvalidLocationException, OccupiedLocationException {
-        quentin myboard = new quentin(5);
-        myboard.nextMove(true, "a4");
-        myboard.nextMove(true, "b3");
-        myboard.nextMove(true, "c3");
-        myboard.nextMove(true, "d4");
-        assertEquals(true, myboard.candidate_for_territory(Arrays.asList(9,14)));
-    }
-
 
 }
