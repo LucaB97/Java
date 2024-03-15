@@ -304,28 +304,47 @@ public class QuentinGame_v2 {
         }
         
         public boolean adiacent_location(List<Integer> region, int idx) {
+            
+            //find all the empty neighbours of the points of the region
             Set<Integer> region_neighbours = new TreeSet<>();
             for (int curr : region) {
                 region_neighbours.addAll(neighbours(curr));
-                region_neighbours.removeIf(index -> board.get(index) != -1);
             }
+            region_neighbours.removeIf(index -> board.get(index) != -1);
+            
+            //add to the region all the empty neighbours found (to save calls to the function in the future)
+            //...
+            
+            //store the neighbours of "idx"
             Set<Integer> extended_idx_neighbours = new TreeSet<>(neighbours(idx));
             extended_idx_neighbours.removeIf(index -> board.get(index) != -1);
             extended_idx_neighbours.add(idx);
+            
+            //if overlap between the neighbours of "idx" and those of the region's locations is found, return true
             Set<Integer> tempSet = new TreeSet<>(extended_idx_neighbours);
             tempSet.retainAll(region_neighbours);
             if (!tempSet.isEmpty())
                 return true;
 
             while (true) {
+                //update the set of neighbours of "idx", including the indirect ones (neighbours of neighbours)
                 for (int x : extended_idx_neighbours) {
                     tempSet.addAll(neighbours(x));
-                    tempSet.removeIf(index -> board.get(index) != -1);
                 }
+                tempSet.removeIf(index -> board.get(index) != -1);
+                
+                //if extending the research of adiacent empty locations is unsuccessful,
+                //i.e., no more locations are found which are adiacent to "idx" or its current neighbours:
+                //since neither "idx" nor its neighbours were adiacent to any location of the region before,
+                //it will be the same now, then the function returns false   
                 if (extended_idx_neighbours.equals(tempSet))
                     return false;
+                
+                //save the information which is stored in the temporary set used to test adiacency to the region 
                 extended_idx_neighbours.clear();
                 extended_idx_neighbours.addAll(tempSet);
+
+                //if overlap between the extended neighbours of "idx" and those of the region's locations is found, return true
                 tempSet.retainAll(region_neighbours);
                 if (!tempSet.isEmpty())
                     return true;
@@ -333,8 +352,9 @@ public class QuentinGame_v2 {
         }
 
         public boolean candidate_for_territory(final List<Integer> region) {            
+            
+            //for each location in the region, verify if it has at least two filled neighbours
             int cnt = 0;
-
             for (int curr : region) {
                 for (int i : neighbours(curr)) {
                     if (board.get(i) != -1)
@@ -347,14 +367,16 @@ public class QuentinGame_v2 {
             return true;
         }
 
-        public void fill_territory(final List<Integer> region, final int last_move) {
+        public void fill_territory(final List<Integer> territory, final int last_move) {
+            
+            //find all the distinct neighbours of the points of a territory
             Set<Integer> neighbours_union = new TreeSet<>();
-            for (int i : region)
+            for (int i : territory)
                 neighbours_union.addAll(neighbours(i));
-            neighbours_union.removeAll(region);
-
+            neighbours_union.removeAll(territory);
             List<Integer> distinctNeighbours = new ArrayList<>(neighbours_union);
 
+            //count how many neighbours are W and how many B
             int cnt_black = 0, cnt_white = 0;
             for (int i : distinctNeighbours) {
                 if (board.get(i) == 0)
@@ -363,6 +385,7 @@ public class QuentinGame_v2 {
                     cnt_white++;
             }
 
+            //in case of tie, increase the count of the player who did not play the last move
             if (cnt_black == cnt_white) {
                 if (board.get(last_move) == 1)
                     cnt_black++;
@@ -370,8 +393,9 @@ public class QuentinGame_v2 {
                     cnt_white++;
             }
 
+            //assign to all locations in the territory a value according to the counts
             final int replacement = (cnt_black<cnt_white)? 1 : 0;
-            region.forEach(index -> board.set(index, replacement));
+            territory.forEach(index -> board.set(index, replacement));
         }
     }
 

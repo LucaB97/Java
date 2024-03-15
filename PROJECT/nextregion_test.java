@@ -100,9 +100,9 @@ public class nextregion_test {
         public boolean adiacent_location(List<Integer> region, int idx) {
             Set<Integer> region_neighbours = new TreeSet<>();
             for (int curr : region) {
-                region_neighbours.addAll(neighbours(curr));
-                region_neighbours.removeIf(index -> board.get(index) != -1);
+                region_neighbours.addAll(neighbours(curr)); 
             }
+            region_neighbours.removeIf(index -> board.get(index) != -1);
             Set<Integer> extended_idx_neighbours = new TreeSet<>(neighbours(idx));
             extended_idx_neighbours.removeIf(index -> board.get(index) != -1);
             extended_idx_neighbours.add(idx);
@@ -114,8 +114,8 @@ public class nextregion_test {
             while (true) {
                 for (int x : extended_idx_neighbours) {
                     tempSet.addAll(neighbours(x));
-                    tempSet.removeIf(index -> board.get(index) != -1);
                 }
+                tempSet.removeIf(index -> board.get(index) != -1);
                 if (extended_idx_neighbours.equals(tempSet))
                     return false;
                 extended_idx_neighbours.clear();
