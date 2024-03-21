@@ -134,12 +134,16 @@ public class QuentinGame_v2 {
 
         public boolean winning_path_lookup(final int idx, List<Integer> exclude , Set<Integer> winning_path) {
             
+            //find the neighbours of the starting location (idx) which might be useful to be explored to detect
+            //a winning path (i.e., they share the same color as the starting point and are not included in the
+            //"exclude" list of already considered points, which are the direct and indirect ancestors of idx)
             List<Integer> good_neighbours = new ArrayList<>();
             for (Integer n : neighbours(idx)) {
                 if (board.get(n).equals(board.get(idx)) && !exclude.contains(n))
                     good_neighbours.add(n);
             }
 
+            //define the locations eligible for the end of a winning path: last row for black, last column for white
             List<Integer> arrival = new ArrayList<>();
             for (int i = 0; i < line_size; i++) {
                 if (board.get(idx) == 0)
@@ -148,11 +152,15 @@ public class QuentinGame_v2 {
                     arrival.add(i*line_size + line_size - 1);
             }
             
+            //if idx is present in the array of arrival locations, a winning path is found -> return true
             if (arrival.contains(idx)) {
                 return true;
             } 
+            //otherwise,
             else {
+                //insert idx in the list of locations to be excluded by further research
                 exclude.add(idx);
+                //recursively, repeat the procedure on all the useful neighbours of idx
                 for (Integer g : good_neighbours) {
                     if (winning_path_lookup(g, exclude, winning_path)) {
                         winning_path.add(g);
@@ -282,10 +290,12 @@ public class QuentinGame_v2 {
 
         public boolean legal_move(final int last_move) {
 
+            //if the last move filled a location s.t. at least one neighbour has the same color, it is a legal move -> return true 
             for (int i : neighbours(last_move))
                 if (board.get(i) == board.get(last_move))
                     return true;
             
+            //if no neighbours have the same color as the last filled location, but a diagonal location does, the move is illegal -> return false
             for (int i : diagonals(last_move))
                 if (board.get(i) == board.get(last_move))
                     return false;    
@@ -295,6 +305,8 @@ public class QuentinGame_v2 {
 
         public List<Integer> next_region(final List<Integer> empty_locations) {
             List<Integer> region = new ArrayList<>();
+            
+            //evaluate, for each empty location, if it is adiacent to any point of the current region
             for (int loc : empty_locations) {                
                 if (region.isEmpty() || adiacent_location(region, loc)) {
                     region.add(loc);
