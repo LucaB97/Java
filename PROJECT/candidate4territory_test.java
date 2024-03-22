@@ -103,9 +103,28 @@ public class candidate4territory_test {
     public void candidate4territory_test_topleft_false() throws IncorrectFormatException, InvalidLocationException, OccupiedLocationException {
         quentin myboard = new quentin(5);
         myboard.nextMove(true, "a1");
-        myboard.nextMove(true, "b1");
+        myboard.nextMove(false, "b1");
         myboard.nextMove(true, "c1");
-        myboard.nextMove(true, "c0");
+        myboard.nextMove(false, "c0");
+
+        //      _________________________________
+        //     |                                 |
+        //    a|      ... B ...   ...   ...      |
+        //     |    :     :     :     :     :    |
+        //     |    :     :     :     :     :    |
+        //    b|      ... W ...   ...   ...      |
+        //     |    :     :     :     :     :    |
+        //     |    :     :     :     :     :    |
+        //    c|    W ... B ...   ...   ...      |
+        //     |    :     :     :     :     :    |
+        //     |    :     :     :     :     :    |
+        //    d|      ...   ...   ...   ...      |
+        //     |    :     :     :     :     :    |
+        //     |    :     :     :     :     :    |
+        //    e|      ...   ...   ...   ...      |
+        //     |_________________________________|
+        //          0     1     2     3     4
+
         assertEquals(false, myboard.candidate_for_territory(Arrays.asList(0,5)));
     }
     
@@ -113,8 +132,27 @@ public class candidate4territory_test {
     public void candidate4territory_test_topleft_true() throws IncorrectFormatException, InvalidLocationException, OccupiedLocationException {
         quentin myboard = new quentin(5);
         myboard.nextMove(true, "a1");
-        myboard.nextMove(true, "b1");
+        myboard.nextMove(false, "b1");
         myboard.nextMove(true, "b0");
+
+        //      _________________________________
+        //     |                                 |
+        //    a|      ... B ...   ...   ...      |
+        //     |    :     :     :     :     :    |
+        //     |    :     :     :     :     :    |
+        //    b|    B ... W ...   ...   ...      |
+        //     |    :     :     :     :     :    |
+        //     |    :     :     :     :     :    |
+        //    c|      ...   ...   ...   ...      |
+        //     |    :     :     :     :     :    |
+        //     |    :     :     :     :     :    |
+        //    d|      ...   ...   ...   ...      |
+        //     |    :     :     :     :     :    |
+        //     |    :     :     :     :     :    |
+        //    e|      ...   ...   ...   ...      |
+        //     |_________________________________|
+        //          0     1     2     3     4
+
         assertEquals(true, myboard.candidate_for_territory(Arrays.asList(0)));
     }
 
@@ -122,9 +160,28 @@ public class candidate4territory_test {
     public void _candidate4territory_test_rightedge_true() throws IncorrectFormatException, InvalidLocationException, OccupiedLocationException {
         quentin myboard = new quentin(5);
         myboard.nextMove(true, "a4");
-        myboard.nextMove(true, "b3");
-        myboard.nextMove(true, "c3");
+        myboard.nextMove(false, "b3");
         myboard.nextMove(true, "d4");
+        myboard.nextMove(false, "c3");
+
+        //      _________________________________
+        //     |                                 |
+        //    a|      ...   ...   ...   ... B    |
+        //     |    :     :     :     :     :    |
+        //     |    :     :     :     :     :    |
+        //    b|      ...   ...   ... W ...      |
+        //     |    :     :     :     :     :    |
+        //     |    :     :     :     :     :    |
+        //    c|      ...   ...   ... W ...      |
+        //     |    :     :     :     :     :    |
+        //     |    :     :     :     :     :    |
+        //    d|      ...   ...   ...   ... B    |
+        //     |    :     :     :     :     :    |
+        //     |    :     :     :     :     :    |
+        //    e|      ...   ...   ...   ...      |
+        //     |_________________________________|
+        //          0     1     2     3     4
+
         assertEquals(true, myboard.candidate_for_territory(Arrays.asList(9,14)));
     }
 

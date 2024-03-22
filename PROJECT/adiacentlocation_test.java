@@ -133,10 +133,29 @@ public class adiacentlocation_test {
         quentin myboard = new quentin(5);
         List<Integer> myregion = new ArrayList<>(Arrays.asList(2,3,4));
         myboard.nextMove(true, "a0");
+        myboard.nextMove(false, "b1");
         myboard.nextMove(true, "a1");
-        myboard.nextMove(true, "b1");
-        myboard.nextMove(true, "c1");
-        myboard.nextMove(true, "c0");
+        myboard.nextMove(false, "c1");
+        myboard.nextMove(true, "d0");
+
+        //      _________________________________
+        //     |                                 |
+        //    a|    B ... B ...   ...   ...      |
+        //     |    :     :     :     :     :    |
+        //     |    :     :     :     :     :    |
+        //    b|      ... W ...   ...   ...      |
+        //     |    :     :     :     :     :    |
+        //     |    :     :     :     :     :    |
+        //    c|      ... W ...   ...   ...      |
+        //     |    :     :     :     :     :    |
+        //     |    :     :     :     :     :    |
+        //    d|    B ...   ...   ...   ...      |
+        //     |    :     :     :     :     :    |
+        //     |    :     :     :     :     :    |
+        //    e|      ...   ...   ...   ...      |
+        //     |_________________________________|
+        //          0     1     2     3     4
+
         assertEquals(false, myboard.adiacent_location(myregion, 5));
     }
 
@@ -145,9 +164,28 @@ public class adiacentlocation_test {
         quentin myboard = new quentin(5);
         List<Integer> myregion = new ArrayList<>(Arrays.asList(2,3,4));
         myboard.nextMove(true, "a0");
+        myboard.nextMove(false, "b1");
         myboard.nextMove(true, "a1");
-        myboard.nextMove(true, "b1");
-        myboard.nextMove(true, "c1");
+        myboard.nextMove(false, "c1");
+
+        //      _________________________________
+        //     |                                 |
+        //    a|    B ... B ...   ...   ...      |
+        //     |    :     :     :     :     :    |
+        //     |    :     :     :     :     :    |
+        //    b|      ... W ...   ...   ...      |
+        //     |    :     :     :     :     :    |
+        //     |    :     :     :     :     :    |
+        //    c|      ... W ...   ...   ...      |
+        //     |    :     :     :     :     :    |
+        //     |    :     :     :     :     :    |
+        //    d|      ...   ...   ...   ...      |
+        //     |    :     :     :     :     :    |
+        //     |    :     :     :     :     :    |
+        //    e|      ...   ...   ...   ...      |
+        //     |_________________________________|
+        //          0     1     2     3     4
+
         assertEquals(true, myboard.adiacent_location(myregion, 5));
     }
 

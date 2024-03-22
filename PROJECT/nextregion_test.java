@@ -142,11 +142,30 @@ public class nextregion_test {
     public void nextregion_test_1() throws IncorrectFormatException, InvalidLocationException, OccupiedLocationException {
         quentin myboard = new quentin(5);
         myboard.nextMove(true, "a0");
-        myboard.nextMove(true, "a1");
-        myboard.nextMove(true, "b1");
-        myboard.nextMove(true, "b2");
+        myboard.nextMove(false, "b1");
+        myboard.nextMove(true, "a1");        
+        myboard.nextMove(false, "b2");
         myboard.nextMove(true, "b3");
-        myboard.nextMove(true, "b4");
+        myboard.nextMove(false, "b4");
+        
+        //      _________________________________
+        //     |                                 |
+        //    a|    B ... B ...   ...   ...      |
+        //     |    :     :     :     :     :    |
+        //     |    :     :     :     :     :    |
+        //    b|      ... W ... W ... B ... W    |
+        //     |    :     :     :     :     :    |
+        //     |    :     :     :     :     :    |
+        //    c|      ...   ...   ...   ...      |
+        //     |    :     :     :     :     :    |
+        //     |    :     :     :     :     :    |
+        //    d|      ...   ...   ...   ...      |
+        //     |    :     :     :     :     :    |
+        //     |    :     :     :     :     :    |
+        //    e|      ...   ...   ...   ...      |
+        //     |_________________________________|
+        //          0     1     2     3     4
+
         List<Integer> empty_locations = myboard.find_locations(false);
         assertEquals(new ArrayList<>(Arrays.asList(2,3,4)), myboard.next_region(empty_locations));
     }
@@ -155,14 +174,33 @@ public class nextregion_test {
     public void nextregion_test_2() throws IncorrectFormatException, InvalidLocationException, OccupiedLocationException {
         quentin myboard = new quentin(5);
         myboard.nextMove(true, "a0");
+        myboard.nextMove(false, "b1");
         myboard.nextMove(true, "a1");
+        myboard.nextMove(false, "c1");
         myboard.nextMove(true, "a2");
+        myboard.nextMove(false, "d1");
         myboard.nextMove(true, "a3");
+        myboard.nextMove(false, "d0");
         myboard.nextMove(true, "a4");
-        myboard.nextMove(true, "b1");
-        myboard.nextMove(true, "c1");
-        myboard.nextMove(true, "d1");
-        myboard.nextMove(true, "d0");
+
+        //      _________________________________
+        //     |                                 |
+        //    a|    B ... B ... B ... B ... B    |
+        //     |    :     :     :     :     :    |
+        //     |    :     :     :     :     :    |
+        //    b|      ... W ...   ...   ...      |
+        //     |    :     :     :     :     :    |
+        //     |    :     :     :     :     :    |
+        //    c|      ... W ...   ...   ...      |
+        //     |    :     :     :     :     :    |
+        //     |    :     :     :     :     :    |
+        //    d|    W ... W ...   ...   ...      |
+        //     |    :     :     :     :     :    |
+        //     |    :     :     :     :     :    |
+        //    e|      ...   ...   ...   ...      |
+        //     |_________________________________|
+        //          0     1     2     3     4
+
         List<Integer> empty_locations = myboard.find_locations(false);
         assertEquals(new ArrayList<>(Arrays.asList(5,10)), myboard.next_region(empty_locations));
     }

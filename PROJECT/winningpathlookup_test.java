@@ -9,7 +9,7 @@ import java.util.stream.IntStream;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class fillterritory_test {
+public class winningpathlookup_test {
     
     public static class IncorrectFormatException extends Exception {
         IncorrectFormatException(String message) {
@@ -136,135 +136,243 @@ public class fillterritory_test {
             return filled_territory;
         }
     
+        public boolean winning_path_lookup(final int idx, List<Integer> exclude , Set<Integer> winning_path) {
+            
+            //find the neighbours of the starting location (idx) which might be useful to be explored to detect
+            //a winning path (i.e., they share the same color as the starting point and are not included in the
+            //"exclude" list of already considered points, which are the direct and indirect ancestors of idx)
+            List<Integer> good_neighbours = new ArrayList<>();
+            for (Integer n : neighbours(idx)) {
+                if (board.get(n).equals(board.get(idx)) && !exclude.contains(n))
+                    good_neighbours.add(n);
+            }
+
+            //define the locations eligible for the end of a winning path: last row for black, last column for white
+            List<Integer> arrival = new ArrayList<>();
+            for (int i = 0; i < line_size; i++) {
+                if (board.get(idx) == 0)
+                    arrival.add(board.size() - line_size + i);
+                else
+                    arrival.add(i*line_size + line_size - 1);
+            }
+            
+            //if idx is present in the array of arrival locations, a winning path is found -> return true
+            if (arrival.contains(idx)) {
+                return true;
+            } 
+            //otherwise,
+            else {
+                //insert idx in the list of locations to be excluded by further research
+                exclude.add(idx);
+                //recursively, repeat the procedure on all the useful neighbours of idx
+                for (Integer g : good_neighbours) {
+                    if (winning_path_lookup(g, exclude, winning_path)) {
+                        winning_path.add(g);
+                        winning_path.add(idx);
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+    
     }
 
-    //TEST REGIONS WHICH ARE NOT TERRITORIES
+
     @Test
-    public void fillterritory_test_black_majority() throws IncorrectFormatException, InvalidLocationException, OccupiedLocationException {
+    public void winningpathlookup_test_black_false_1() throws IncorrectFormatException, InvalidLocationException, OccupiedLocationException {
         quentin myboard = new quentin(5);
         myboard.nextMove(true, "a0");
-        myboard.nextMove(false, "d0");
-        myboard.nextMove(true, "c1");
-        myboard.nextMove(false, "d1");
+        myboard.nextMove(true, "a1");
         myboard.nextMove(true, "b1");
+        myboard.nextMove(true, "c1");
+        myboard.nextMove(true, "c2");
+        myboard.nextMove(true, "c3");
+        myboard.nextMove(true, "d3");
 
         //      _________________________________
         //     |                                 |
-        //    a|    B ...   ...   ...   ...      |
+        //    a|    B ... B ...   ...   ...      |
         //     |    :     :     :     :     :    |
         //     |    :     :     :     :     :    |
         //    b|      ... B ...   ...   ...      |
         //     |    :     :     :     :     :    |
         //     |    :     :     :     :     :    |
-        //    c|      ... B ...   ...   ...      |
+        //    c|      ... B ... B ... B ...      |
         //     |    :     :     :     :     :    |
         //     |    :     :     :     :     :    |
-        //    d|    W ... W ...   ...   ...      |
+        //    d|      ...   ...   ... B ...      |
         //     |    :     :     :     :     :    |
         //     |    :     :     :     :     :    |
         //    e|      ...   ...   ...   ...      |
         //     |_________________________________|
         //          0     1     2     3     4
 
-        //region {b0,c0} -> {5,10} should be filled by black (0)
-        assertEquals(Arrays.asList(0,0), myboard.fill_territory(Arrays.asList(5,10),6));
+        assertEquals(false, myboard.winning_path_lookup(0, new ArrayList<Integer>(), new TreeSet<Integer>()));
     }
 
     @Test
-    public void fillterritory_test_white_majority() throws IncorrectFormatException, InvalidLocationException, OccupiedLocationException {
+    public void winningpathlookup_test_black_false_2() throws IncorrectFormatException, InvalidLocationException, OccupiedLocationException {
         quentin myboard = new quentin(5);
         myboard.nextMove(true, "a0");
-        myboard.nextMove(false, "d0");
         myboard.nextMove(true, "a1");
-        myboard.nextMove(false, "b1");
-        myboard.nextMove(true, "a2");
-        myboard.nextMove(false, "c1");
-        
+        myboard.nextMove(true, "b1");
+        myboard.nextMove(true, "c1");
+        myboard.nextMove(true, "c2");
+        myboard.nextMove(true, "c3");
+        myboard.nextMove(true, "d3");
+        myboard.nextMove(true, "d4");
 
         //      _________________________________
         //     |                                 |
-        //    a|    B ... B ... B ...   ...      |
+        //    a|    B ... B ...   ...   ...      |
+        //     |    :     :     :     :     :    |
+        //     |    :     :     :     :     :    |
+        //    b|      ... B ...   ...   ...      |
+        //     |    :     :     :     :     :    |
+        //     |    :     :     :     :     :    |
+        //    c|      ... B ... B ... B ...      |
+        //     |    :     :     :     :     :    |
+        //     |    :     :     :     :     :    |
+        //    d|      ...   ...   ... B ... B    |
+        //     |    :     :     :     :     :    |
+        //     |    :     :     :     :     :    |
+        //    e|      ...   ...   ...   ...      |
+        //     |_________________________________|
+        //          0     1     2     3     4
+
+        assertEquals(false, myboard.winning_path_lookup(0, new ArrayList<Integer>(), new TreeSet<Integer>()));
+    }
+
+    @Test
+    public void winningpathlookup_test_black_true() throws IncorrectFormatException, InvalidLocationException, OccupiedLocationException {
+        quentin myboard = new quentin(5);
+        myboard.nextMove(true, "a0");
+        myboard.nextMove(true, "a1");
+        myboard.nextMove(true, "b1");
+        myboard.nextMove(true, "c1");
+        myboard.nextMove(true, "c2");
+        myboard.nextMove(true, "c3");
+        myboard.nextMove(true, "d3");
+        myboard.nextMove(true, "e3");
+
+        //      _________________________________
+        //     |                                 |
+        //    a|    B ... B ...   ...   ...      |
+        //     |    :     :     :     :     :    |
+        //     |    :     :     :     :     :    |
+        //    b|      ... B ...   ...   ...      |
+        //     |    :     :     :     :     :    |
+        //     |    :     :     :     :     :    |
+        //    c|      ... B ... B ... B ...      |
+        //     |    :     :     :     :     :    |
+        //     |    :     :     :     :     :    |
+        //    d|      ...   ...   ... B ...      |
+        //     |    :     :     :     :     :    |
+        //     |    :     :     :     :     :    |
+        //    e|      ...   ...   ... B ...      |
+        //     |_________________________________|
+        //          0     1     2     3     4
+
+        assertEquals(true, myboard.winning_path_lookup(0, new ArrayList<Integer>(), new TreeSet<Integer>()));
+    }
+
+    @Test
+    public void winningpathlookup_test_white_false_1() throws IncorrectFormatException, InvalidLocationException, OccupiedLocationException {
+        quentin myboard = new quentin(5);
+        myboard.nextMove(false, "a0");
+        myboard.nextMove(false, "a1");
+        myboard.nextMove(false, "b1");
+        myboard.nextMove(false, "c1");
+        myboard.nextMove(false, "c2");
+        myboard.nextMove(false, "c3");
+        myboard.nextMove(false, "d3");
+
+        //      _________________________________
+        //     |                                 |
+        //    a|    W ... W ...   ...   ...      |
         //     |    :     :     :     :     :    |
         //     |    :     :     :     :     :    |
         //    b|      ... W ...   ...   ...      |
         //     |    :     :     :     :     :    |
         //     |    :     :     :     :     :    |
-        //    c|      ... W ...   ...   ...      |
+        //    c|      ... W ... W ... W ...      |
         //     |    :     :     :     :     :    |
         //     |    :     :     :     :     :    |
-        //    d|    W ...   ...   ...   ...      |
+        //    d|      ...   ...   ... W ...      |
         //     |    :     :     :     :     :    |
         //     |    :     :     :     :     :    |
         //    e|      ...   ...   ...   ...      |
         //     |_________________________________|
         //          0     1     2     3     4
 
-        //region {b0,c0} -> {5,10} should be filled by white (1)
-        assertEquals(Arrays.asList(1,1), myboard.fill_territory(Arrays.asList(5,10),11));
+        assertEquals(false, myboard.winning_path_lookup(0, new ArrayList<Integer>(), new TreeSet<Integer>()));
     }
 
     @Test
-    public void fillterritory_test_tie_blacklastmove() throws IncorrectFormatException, InvalidLocationException, OccupiedLocationException {
+    public void winningpathlookup_test_white_false_2() throws IncorrectFormatException, InvalidLocationException, OccupiedLocationException {
         quentin myboard = new quentin(5);
-        myboard.nextMove(false, "d0");
-        myboard.nextMove(true, "a0");
-        myboard.nextMove(false, "d1");
-        myboard.nextMove(true, "a1");
+        myboard.nextMove(false, "a0");
+        myboard.nextMove(false, "a1");
+        myboard.nextMove(false, "b1");
         myboard.nextMove(false, "c1");
-        myboard.nextMove(true, "b1");
+        myboard.nextMove(false, "c2");
+        myboard.nextMove(false, "c3");
+        myboard.nextMove(false, "d3");
+        myboard.nextMove(false, "e3");
 
         //      _________________________________
         //     |                                 |
-        //    a|    B ... B ...   ...   ...      |
+        //    a|    W ... W ...   ...   ...      |
         //     |    :     :     :     :     :    |
         //     |    :     :     :     :     :    |
-        //    b|      ... B ...   ...   ...      |
+        //    b|      ... W ...   ...   ...      |
         //     |    :     :     :     :     :    |
         //     |    :     :     :     :     :    |
-        //    c|      ... W ...   ...   ...      |
+        //    c|      ... W ... W ... W ...      |
         //     |    :     :     :     :     :    |
         //     |    :     :     :     :     :    |
-        //    d|    W ... W ...   ...   ...      |
+        //    d|      ...   ...   ... W ...      |
         //     |    :     :     :     :     :    |
         //     |    :     :     :     :     :    |
-        //    e|      ...   ...   ...   ...      |
+        //    e|      ...   ...   ... W ...      |
         //     |_________________________________|
         //          0     1     2     3     4
 
-        //region {b0,c0} -> {5,10} should be filled by white (1)
-        assertEquals(Arrays.asList(1,1), myboard.fill_territory(Arrays.asList(5,10),6));
+        assertEquals(false, myboard.winning_path_lookup(0, new ArrayList<Integer>(), new TreeSet<Integer>()));
     }
 
     @Test
-    public void fillterritory_test_tie_whitelastmove() throws IncorrectFormatException, InvalidLocationException, OccupiedLocationException {
+    public void winningpathlookup_test_white_true() throws IncorrectFormatException, InvalidLocationException, OccupiedLocationException {
         quentin myboard = new quentin(5);
-        myboard.nextMove(true, "a0");
-        myboard.nextMove(false, "d0");
-        myboard.nextMove(true, "a1");
-        myboard.nextMove(false, "d1");
-        myboard.nextMove(true, "b1");
+        myboard.nextMove(false, "a0");
+        myboard.nextMove(false, "a1");
+        myboard.nextMove(false, "b1");
         myboard.nextMove(false, "c1");
-        
+        myboard.nextMove(false, "c2");
+        myboard.nextMove(false, "c3");
+        myboard.nextMove(false, "d3");
+        myboard.nextMove(false, "d4");
 
         //      _________________________________
         //     |                                 |
-        //    a|    B ... B ...   ...   ...      |
+        //    a|    W ... W ...   ...   ...      |
         //     |    :     :     :     :     :    |
         //     |    :     :     :     :     :    |
-        //    b|      ... B ...   ...   ...      |
+        //    b|      ... W ...   ...   ...      |
         //     |    :     :     :     :     :    |
         //     |    :     :     :     :     :    |
-        //    c|      ... W ...   ...   ...      |
+        //    c|      ... W ... W ... W ...      |
         //     |    :     :     :     :     :    |
         //     |    :     :     :     :     :    |
-        //    d|    W ... W ...   ...   ...      |
+        //    d|      ...   ...   ... W ... W    |
         //     |    :     :     :     :     :    |
         //     |    :     :     :     :     :    |
         //    e|      ...   ...   ...   ...      |
         //     |_________________________________|
         //          0     1     2     3     4
 
-        //region {b0,c0} -> {5,10} should be filled by black (0)
-        assertEquals(Arrays.asList(0,0), myboard.fill_territory(Arrays.asList(5,10),11));
+        assertEquals(true, myboard.winning_path_lookup(0, new ArrayList<Integer>(), new TreeSet<Integer>()));
     }
+
 }
